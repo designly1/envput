@@ -1,0 +1,54 @@
+{
+    "name": "envput",
+    "version": "1.0.0",
+    "description": "A CLI tool to securely upload and download encrypted environment files to/from an S3 bucket",
+    "main": "dist/index.js",
+    "bin": {
+        "envput": "dist/cli.js"
+    },
+    "scripts": {
+        "build": "webpack --mode=production",
+        "start": "node dist/cli.js",
+        "dev": "webpack --mode=development --watch",
+        "clean": "rm -rf dist",
+        "prepublishOnly": "npm run clean && npm run build",
+        "test": "jest"
+    },
+    "packageManager": "pnpm@8.0.0",
+    "keywords": [
+        "environment",
+        "secrets",
+        "s3",
+        "encryption",
+        "cli",
+        "env"
+    ],
+    "author": {
+        "name": "Jay Simons",
+        "url": "https://yaa.bz"
+    },
+    "license": "MIT",
+    "files": [
+        "dist/**/*",
+        "README.md"
+    ],
+    "dependencies": {
+        "@aws-sdk/client-s3": "3.876.0",
+        "@types/inquirer": "8.2.12",
+        "commander": "14.0.0",
+        "dotenv": "17.2.1",
+        "inquirer": "8.2.7"
+    },
+    "engines": {
+        "node": ">=16.0.0"
+    },
+    "devDependencies": {
+        "@types/node": "24.3.0",
+        "jest": "30.0.5",
+        "ts-jest": "29.4.1",
+        "ts-loader": "9.5.4",
+        "typescript": "5.9.2",
+        "webpack": "5.101.3",
+        "webpack-cli": "6.0.1"
+    }
+}

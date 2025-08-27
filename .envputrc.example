@@ -1,0 +1,25 @@
+{
+  "projectName": "myapp",
+  "encryptionKey": "a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456",
+  "aws": {
+    "accessKeyId": "your-access-key-id",
+    "secretAccessKey": "your-secret-access-key",
+    "region": "us-east-1",
+    "bucket": "your-s3-bucket-name",
+    "bucketPath": "/envput"
+  },
+  "environments": [
+    {
+      "name": "development",
+      "file": ".env.development"
+    },
+    {
+      "name": "staging",
+      "file": ".env.staging"
+    },
+    {
+      "name": "production",
+      "file": ".env.production"
+    }
+  ]
+}
