@@ -1,5 +1,14 @@
 # envput
 
+![NPM Version](https://img.shields.io/npm/v/envput)
+![Static Badge](https://img.shields.io/badge/build-passing-brightgreen)
+![NPM License](https://img.shields.io/npm/l/envput)
+
+![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?logo=typescript&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-339933?logo=nodedotjs&logoColor=white)
+![AWS](https://img.shields.io/badge/AWS-FF9900?logo=amazonaws&logoColor=white)
+
+
 A secure CLI tool to encrypt and upload/download environment files to/from AWS S3 using a simple configuration file.
 
 ## Author
