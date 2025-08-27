@@ -1,6 +1,6 @@
 {
     "name": "envput",
-    "version": "1.0.1",
+    "version": "1.1.0",
     "description": "A CLI tool to securely upload and download encrypted environment files to/from an S3 bucket",
     "main": "dist/index.js",
     "bin": {

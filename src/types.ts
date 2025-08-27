@@ -44,4 +44,5 @@ export interface CliOptions {
   environment?: string;
   list?: boolean;
   init?: boolean;
+  all?: boolean;
 }

@@ -155,6 +155,9 @@ npx envput upload
 npx envput upload production
 # or
 npx envput upload -e production
+
+# Upload all environments
+npx envput upload --all
 ```
 
 ### `envput download`
@@ -168,6 +171,9 @@ npx envput download
 npx envput download production
 # or
 npx envput download -e production
+
+# Download all environments
+npx envput download --all
 ```
 
 ## Usage Examples

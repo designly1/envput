@@ -32,12 +32,14 @@ program
   .command("upload [environment]")
   .description("Upload an environment to S3")
   .option("-e, --environment <name>", "Environment name to upload")
+  .option("-a, --all", "Upload all configured environments")
   .action(uploadCommand);
 
 program
   .command("download [environment]")
   .description("Download an environment from S3")
   .option("-e, --environment <name>", "Environment name to download")
+  .option("-a, --all", "Download all configured environments")
   .action(downloadCommand);
 
 program.parse();

@@ -78,6 +78,15 @@ export async function uploadCommand(
   try {
     const config = readConfig();
 
+    // Handle --all to upload all environments
+    if (options.all) {
+      for (const env of config.environments) {
+        await handleSingleUpload(config, env.name);
+      }
+      console.log("✅ All environments uploaded successfully.");
+      return;
+    }
+
     // Get the environment to upload (positional arg takes precedence over option)
     const environmentName = environmentArg || options.environment;
     const env = environmentName
@@ -148,6 +157,54 @@ export async function uploadCommand(
   }
 }
 
+async function handleSingleUpload(
+  config: ReturnType<typeof readConfig>,
+  environmentName: string
+): Promise<void> {
+  const env = getEnvironment(config, environmentName);
+  const filePath = resolve(env.file);
+
+  if (!existsSync(filePath)) {
+    console.error(`❌ File not found: ${filePath}`);
+    return;
+  }
+
+  console.log(`📁 Reading file: ${filePath}`);
+  const fileContent = readFileSync(filePath, "utf8");
+
+  const s3Key = generateS3Key(config, env.name);
+  const s3Config = {
+    bucket: config.aws.bucket,
+    key: s3Key,
+    region: config.aws.region,
+  };
+
+  const exists = await objectExists(
+    s3Config,
+    config.aws.accessKeyId,
+    config.aws.secretAccessKey
+  );
+
+  if (exists) {
+    console.log(
+      `ℹ️  Skipping '${env.name}' (object already exists). Use single upload to overwrite.`
+    );
+    return;
+  }
+
+  const encrypted = encrypt(fileContent, config.encryptionKey);
+  const packedData = packEncryptedData(encrypted);
+
+  await uploadToS3(
+    packedData,
+    s3Config,
+    config.aws.accessKeyId,
+    config.aws.secretAccessKey
+  );
+
+  console.log(`✅ Uploaded '${env.name}'`);
+}
+
 /**
  * Download command - downloads an environment file from S3
  */
@@ -157,6 +214,15 @@ export async function downloadCommand(
 ): Promise<void> {
   try {
     const config = readConfig();
+
+    // Handle --all to download all environments
+    if (options.all) {
+      for (const env of config.environments) {
+        await handleSingleDownload(config, env.name);
+      }
+      console.log("✅ All environments downloaded successfully.");
+      return;
+    }
 
     // Get the environment to download (positional arg takes precedence over option)
     const environmentName = environmentArg || options.environment;
@@ -219,4 +285,38 @@ export async function downloadCommand(
     );
     process.exit(1);
   }
+}
+
+async function handleSingleDownload(
+  config: ReturnType<typeof readConfig>,
+  environmentName: string
+): Promise<void> {
+  const env = getEnvironment(config, environmentName);
+  const filePath = resolve(env.file);
+
+  if (existsSync(filePath)) {
+    console.log(
+      `ℹ️  Skipping '${env.name}' (local file exists). Use single download to overwrite.`
+    );
+    return;
+  }
+
+  const s3Key = generateS3Key(config, env.name);
+  const s3Config = {
+    bucket: config.aws.bucket,
+    key: s3Key,
+    region: config.aws.region,
+  };
+
+  const packedData = await downloadFromS3(
+    s3Config,
+    config.aws.accessKeyId,
+    config.aws.secretAccessKey
+  );
+
+  const { data, iv, salt } = unpackEncryptedData(packedData);
+  const decrypted = decrypt(data, iv, salt, config.encryptionKey);
+
+  writeFileSync(filePath, decrypted.data);
+  console.log(`✅ Downloaded '${env.name}' to ${filePath}`);
 }
